@@ -1,0 +1,19 @@
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore IDE/editor files
+.vscode/
+.idea/
+
+# Ignore logs and cache
+application/logs/*
+!application/logs/index.html
+application/cache/*
+!application/cache/index.html
+
+# Ignore environment configs
+.env
+
+# Ignore vendor if using Composer
+/vendor/
