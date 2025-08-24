@@ -1,20 +1,25 @@
-# Use official PHP with Apache
+# Use official PHP + Apache image
 FROM php:8.2-apache
 
-# Enable required Apache modules and PHP extensions
+# Install system dependencies + PHP extensions for PostgreSQL
 RUN apt-get update && apt-get install -y \
-    libzip-dev unzip \
-    && docker-php-ext-install mysqli pdo pdo_mysql \
-    && a2enmod rewrite
+    libpq-dev \
+    unzip \
+    git \
+    && docker-php-ext-install pdo pdo_pgsql pgsql
 
-# Copy project files into Apache document root
+# Enable Apache mod_rewrite for CodeIgniter
+RUN a2enmod rewrite
+
+# Copy project files to container
 COPY . /var/www/html/
 
 # Set working directory
 WORKDIR /var/www/html/
 
-# Allow .htaccess overrides
-RUN sed -i 's/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
+# Set permissions (important for CI cache/logs/uploads)
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html
 
-# Expose port 80
+# Expose port 80 for web traffic
 EXPOSE 80
